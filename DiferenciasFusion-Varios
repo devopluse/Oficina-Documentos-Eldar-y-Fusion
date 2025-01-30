@@ -1,0 +1,5 @@
+--PARA MOCO GRANDE editar el saldo de esta cuenta positivo o negativo segun corresponda
+--SELECT        TOP (200) IDCtaCteMovimientoCliente, IDCtaCteCliente, Fecha, Importe, Saldo, TipoMovimiento, Observaciones, Activo, IDCajaConcepto, EsGastoNuevaAdm, IDAgencia, Usuario, FechaImputacion
+--FROM            CtaCteMovimientoCliente
+--WHERE        (IDCtaCteCliente = 100634)
+--ORDER BY Fecha DESC
