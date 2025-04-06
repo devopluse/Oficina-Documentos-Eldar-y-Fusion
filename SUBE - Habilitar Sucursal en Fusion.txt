@@ -1,0 +1,25 @@
+Alguna validaciones para comparar Roca con Tucuman
+  where IDAgencia in(10007630,10006203) sube
+  where IDAgencia in(4959,21295) virtual
+  where UserCode in ('Gralroca','nucleo') fusion
+  where idacceso in(96,115) fusion
+  where IDCliente in(231,294) virtual
+  where IDCliente in(280,381) Sube
+  where IDCtaCteCliente in(100604,100712) sube
+
+
+Tablas en ELDAR a Modificar para habilitar una sucursal para que venda Sube:
+Agencia
+
+Tablas en FUSION a Modificar para habilitar una sucursal para que venda Sube:
+
+AgenciaXCliente
+AsignacionLimiteCredito
+Cliente -- IDCliente381	TUC CABRERA SUBE
+ClienteRelacionado
+CtaCteCliente -- IDCtaCteCliente 100712
+CtaCteMovimientoCliente
+ListaPrecios
+ListaPreciosDetalle
+
+si todo funciona verificar la solicitud en tabla AsignacionesEldarPendientes

@@ -1,0 +1,8 @@
+Tarea que ejecuta la conciliacion de los BANCOS
+Job: FUSION - TAREA - CONCILIACION BANCOS CADA 20 MIN
+Ejecuta internamente:
+exec EldarWebConciliacionBancoMacro
+exec EldarWebConciliacionBancoMacroXNroDeposito
+exec EldarWebConciliacionBancoMacroXNroCUIT
+
+exec EldarWebConciliacionBancoSantanderXNroDeposito

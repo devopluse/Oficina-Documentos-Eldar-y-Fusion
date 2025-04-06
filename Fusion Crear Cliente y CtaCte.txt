@@ -1,0 +1,52 @@
+Para agregar una nueva cuenta corriente y o Cliente.
+Cuando se crea un nuevo Cliente, se crea una nueva cuenta corriente unica para el cliente.
+Procedimiento:
+Crear una Agencia en Eldar hija de Argentina para ligar al Cliente/CtaCte
+Crear la misma Agencia en la tabla Agencia de Fusion (copio y pego con el mismo IDAgencia que tiene en Eldar)
+Luego hay que buscar las tablas "ListaPrecios y ListaPrecioDetalle" y desactivar el ID autonumerico en las tablas para que el viejo fusion verde pueda grabar el Cliente
+Para esto primero hay que ir a la tabla LSDATAPrimaryKEY y actualizar con el ultimo id de las tabalas + 1, luego desactivar el autonumerico en las dos tablas y grabar el cambio
+En el Alta de cliente en el Fusion Verde hay que elegir ambas agencias segun Eldar y Fusion
+Luego de grabado exitosamente NO OLVIDAR VOLVER A PONERLO AUTONUMERICO a las tablas "ListaPrecios y ListaPrecioDetalle"
+Luego ir a la tabla Cliente y buscar nuevo id generado para el cliente
+Luego ir a la tabla CtaCteCliente y buscar el id generado para esta tabla
+Luego ir a la tabla AgenciaXCtaCte y agregar los ids requeridos
+Corroborar la tabla AgenciaXCliente que este el registro para el cliente
+Luego ir a la tabla Agencia en Eldar y poner en el campo IDCtaCteFusion el valor de la tabla CtaCteFusion segun el IDCliente generado
+Luego ir a la tabla CtaCteMovimientoCliente en Fusion y con el IDCtaCteCliente crear un registro inicial en 0 con el TipoMovimiento en 9
+Generar movimiento de Caja de ingreso y salida para probar que todo este correcto
+
+
+PROCESO:
+Crear la Agencia en eldar desdes posweb6333 Seguridad/Agencia
+
+Insertar la misma agencia en Fusion:
+Select IDAgencia ,IDAgenciaSup,Nombre,IDBarrio,Direccion,RazonSocial,CUIT,Telefono,EMail
+,Celular,Contacto,Observaciones,SubNiveles,TipoAgencia,FechaAlta,Activo,LimiteCredito,FechaCreacion
+,FechaUltimaModificacion,IDRubro,0,0,0,EsMayorista,IDAgencia
+from Agencia where nombre like 'GARANTIA POR EQUIPAMIENTO MZA'
+10007819	GARANTIA POR EQUIPAMIENTO MZA
+
+Crear Cliente quitando autonumerio de las tabla "ListaPrecios y ListaPrecioDetalle"
+
+Buscar los id de Cliente y CtaCte
+Select  A.IDAgencia, C.IDCliente, NombreCliente, CCC.IDCtaCteCliente
+from Cliente C
+inner join CtaCteCliente CCC on C.IDCliente = CCC.IDCliente
+inner join Agencia A on A.Nombre = C.NombreCliente + ' FUSION'
+where NombreCliente = 'GARANTIA POR EQUIPAMIENTO MZA
+
+Insertar en AgenciaXCtaCte 
+select * from AgenciaXCtaCte where IDAgencia = 10007819
+insert into AgenciaXCtaCte(IDAgencia,IDCtaCteCliente) Values(10007819,100717)
+
+Corroborar la tabla AgenciaXCliente
+Select  * from AgenciaXCliente where IDAgencia = 10007819
+
+Crear registro inicial en tabla tabla CtaCteMovimientoCliente copiando:
+SELECT        TOP (1) IDCtaCteMovimientoCliente, IDCtaCteCliente, Fecha, Importe, Saldo, TipoMovimiento, Observaciones, Activo, IDCajaConcepto, EsGastoNuevaAdm, IDAgencia, Usuario, FechaImputacion
+FROM            CtaCteMovimientoCliente
+WHERE        (TipoMovimiento = 9) AND (Importe = 0) AND (Observaciones = 'Inicio Cta Cte')
+ORDER BY Fecha DESC
+
+
+
