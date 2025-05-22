@@ -1,0 +1,38 @@
+--Consulta con filtro de fecha y monto sobre todas las tablas de fusion que en general tienen insersiones
+DECLARE @SQL NVARCHAR(MAX);
+DECLARE @TablaNombre NVARCHAR(255);
+DECLARE @CampoFecha NVARCHAR(255);
+DECLARE @CampoValor NVARCHAR(255);
+
+DECLARE @FechaInicio DATETIME = '20250522 12:10:00';
+DECLARE @FechaFin DATETIME    = '20250522 12:16:00';
+DECLARE @MontoDesde INT = 1;
+DECLARE @MontoHasta INT = 30000;
+
+-- Cursor para recorrer la tabla TablasParaCtrolDif
+DECLARE cursorTablas CURSOR FOR
+SELECT TablaNombre, CampoFecha, CampoValor
+FROM TablasParaCtrolDif;
+
+OPEN cursorTablas;
+FETCH NEXT FROM cursorTablas INTO @TablaNombre, @CampoFecha, @CampoValor;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Construcción de consulta dinámica con ABS()
+    SET @SQL = N'
+    SELECT ''' + @TablaNombre + ''' AS TablaNombre, *, ABS(' + QUOTENAME(@CampoValor) + ') AS CampoValor_Abs
+    FROM ' + QUOTENAME(@TablaNombre) + '
+    WHERE ' + QUOTENAME(@CampoFecha) + ' BETWEEN @FechaInicio AND @FechaFin
+    AND ABS(' + QUOTENAME(@CampoValor) + ') BETWEEN @MontoDesde AND @MontoHasta;';
+
+    -- Ejecución segura de la consulta
+    EXEC sp_executesql @SQL, 
+        N'@FechaInicio DATETIME, @FechaFin DATETIME, @MontoDesde INT, @MontoHasta INT',
+        @FechaInicio, @FechaFin, @MontoDesde, @MontoHasta;
+
+    FETCH NEXT FROM cursorTablas INTO @TablaNombre, @CampoFecha, @CampoValor;
+END
+
+CLOSE cursorTablas;
+DEALLOCATE cursorTablas;
